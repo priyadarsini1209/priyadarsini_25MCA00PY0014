@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Details</title>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #eaf4ff;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .container {
+            background: white;
+            max-width: 600px;
+            margin: auto;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background: #123c69;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .book {
+            background: #f1f8ff;
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        #message {
+            margin-top: 15px;
+            color: #c0392b;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Book Details</h1>
+
+        <button id="loadBooks">Load Books</button>
+
+        <div id="message"></div>
+        <div id="bookList"></div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+
+            $("#loadBooks").click(function() {
+
+                $("#message").text("Loading books...");
+                $("#bookList").empty();
+
+                $.ajax({
+                    url: "get_books.php",
+                    type: "GET",
+                    dataType: "json",
+
+                    success: function(books) {
+                        $("#message").text("");
+
+                        if (books.length === 0) {
+                            $("#message").text("No books found.");
+                            return;
+                        }
+
+                        $.each(books, function(index, book) {
+                            $("#bookList").append(
+                                $("<div>").addClass("book").append(
+                                    $("<h3>").text(book.title),
+                                    $("<p>").text("Author: " + book.author)
+                                )
+                            );
+                        });
+                    },
+
+                    error: function() {
+                        $("#message").text(
+                            "Unable to load books. Check the PHP file and database."
+                        );
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
